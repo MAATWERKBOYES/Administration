@@ -1,1 +1,1 @@
-var TEACHER_DATA_URL = 'js/data.json';
+var TEACHER_DATA_URL = 'js/teachers/data.json';
