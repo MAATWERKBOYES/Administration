@@ -1,1 +1,4 @@
-var TEACHER_DATA_URL = 'js/teachers/data.json';
+var API_HOST_URL = 'http://145.93.97.31:8080/';
+
+var REQUEST_TEACHERS_URL = API_HOST_URL + 'persons';
+var UPDATE_TEACHER_PRESENT_URL = API_HOST_URL + 'person';
