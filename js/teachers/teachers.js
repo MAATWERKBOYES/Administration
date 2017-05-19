@@ -13,7 +13,8 @@ function loadTeachers() {
             append += '</tr>';
         });
 
-        $('#teachers > tbody').append(append);
-        $('#teachers').DataTable();
+        $('#teachers').find('tbody')
+            .append(append)
+            .parent().DataTable();
     }, "json");
 }
