@@ -3,11 +3,15 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty'], functio
 
     $(document).on('change', '.present', function () {
         const element = $(this);
+        updateCheckBox(element);
+    });
+
+    function updateCheckBox(element) {
         const id = element.data('id');
         const present = element.prop('checked');
 
         updateTeacherPresentStatus(id, present);
-    });
+    }
 
     $(document).on('click', '#btnFetchTeachers', function () {
         const element = $('#btnFetchTeachers');
@@ -61,7 +65,9 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty'], functio
                 }
 
                 const checkBox = '<input type="checkbox" class="present" data-id="' + item.id + '" value="present"' + (item.present ? " checked" : "") + '>' + '</td>';
-                table.row.add([item.id, item.displayName, item.personalTitle, checkBox]);
+                const row = table.row.add([item.id, item.displayName, item.personalTitle, checkBox]).node();
+                const element = $(row).find('td').eq(3);
+                updatePresentCell(element, item.present);
             });
 
             table.draw();
@@ -72,5 +78,13 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty'], functio
 
     function updateTeacherPresentStatus(id, present) {
         connection.updatePersonPresence(id, present);
+
+        const element = $(`[data-id='${id}']`).parent();
+        updatePresentCell(element, present);
+    }
+
+    function updatePresentCell(element, present) {
+        element.toggleClass('success', present);
+        element.toggleClass('danger', !present);
     }
 });
