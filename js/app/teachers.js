@@ -1,4 +1,4 @@
-define(['jquery', 'util/user', 'util/connection', 'datatables'], function ($, user, connection, datatables) {
+define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty'], function ($, user, connection, datatables, noty) {
     user.checkLoggedIn();
 
     $(document).on('change', '.present', function () {
@@ -9,28 +9,66 @@ define(['jquery', 'util/user', 'util/connection', 'datatables'], function ($, us
         updateTeacherPresentStatus(id, present);
     });
 
+    $(document).on('click', '#btnFetchTeachers', function () {
+        const element = $('#btnFetchTeachers');
+        element.attr('disabled', 'true');
 
-    connection.getAllPeople().done(function (response) {
-        let append = '';
-
-        $.each(response, function (i, item) {
-            if (item.personalTitle === null) {
-                return;
-            }
-
-            append += '<tr>';
-            append += '<td>' + item.id + '</td>';
-            append += '<td>' + item.displayName + '</td>';
-            append += '<td>' + item.personalTitle + '</td>';
-            append += '<td>' + '<input type="checkbox" class="present" data-id="' + item.id + '" value="present"' + (item.present ? " checked" : "") + '>' + '</td>';
-            append += '</tr>';
+        const notification = noty({
+            text: 'Refreshing all teachers...',
+            theme: 'relax',
+            layout: 'topCenter',
+            type: 'warning',
+            force: true,
+            timeout: false
         });
 
-        $('#teachers')
-            .find('tbody')
-            .append(append)
-            .parent().DataTable();
+        connection.fetchTeachersFromApi().always(function () {
+            element.removeAttr('disabled');
+        }).done(function () {
+            fillTeachersTable();
+            notification.close();
+
+            noty({
+                text: 'Successfully refreshed all teachers.',
+                theme: 'relax',
+                layout: 'topCenter',
+                type: 'success',
+                force: true,
+                timeout: 5000
+            });
+        }).fail(function (xhr, status, error) {
+            notification.close();
+
+            noty({
+                text: 'Failed to refresh teachers: ' + error,
+                theme: 'relax',
+                layout: 'topCenter',
+                type: 'error',
+                force: true,
+                timeout: 5000
+            });
+        });
     });
+
+    function fillTeachersTable() {
+        connection.getAllPeople().done(function (response) {
+            const table = $('#teachers').DataTable();
+            table.clear();
+
+            $.each(response, function (i, item) {
+                if (item.personalTitle === null) {
+                    return;
+                }
+
+                const checkBox = '<input type="checkbox" class="present" data-id="' + item.id + '" value="present"' + (item.present ? " checked" : "") + '>' + '</td>';
+                table.row.add([item.id, item.displayName, item.personalTitle, checkBox]);
+            });
+
+            table.draw();
+        });
+    }
+
+    fillTeachersTable();
 
     function updateTeacherPresentStatus(id, present) {
         connection.updatePersonPresence(id, present);

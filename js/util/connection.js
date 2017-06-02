@@ -3,6 +3,7 @@ define(['jquery'], function ($) {
     const LOGIN_URL = API_HOST_URL + 'login';
 
     const REQUEST_ALL_PEOPLE_URL = API_HOST_URL + 'people';
+    const FETCH_TEACHERS_FROM_API_URL = API_HOST_URL + 'people/save';
     const REQUEST_SELF_PERSON_URL = API_HOST_URL + 'people/me';
     const UPDATE_PERSON_PRESENCE_URL = API_HOST_URL + 'people/{id}/presence';
 
@@ -14,6 +15,10 @@ define(['jquery'], function ($) {
         return $.post(LOGIN_URL, {
             token
         });
+    };
+
+    connection.fetchTeachersFromApi = function () {
+        return $.get(FETCH_TEACHERS_FROM_API_URL);
     };
 
     connection.getAllPeople = function () {
