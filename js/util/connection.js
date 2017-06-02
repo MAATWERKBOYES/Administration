@@ -7,7 +7,9 @@ define(['jquery'], function ($) {
     const REQUEST_SELF_PERSON_URL = API_HOST_URL + 'people/me';
     const UPDATE_PERSON_PRESENCE_URL = API_HOST_URL + 'people/{id}/presence';
 
-    const REQUEST_QUESTIONS_URL = API_HOST_URL + 'questions';
+    const REQUEST_ALL_QUESTIONS_URL = API_HOST_URL + 'question';
+    const UPDATE_QUESTION_URL = API_HOST_URL + 'question';
+    const REQUEST_SINGLE_QUESTION_URL = API_HOST_URL + 'question/{id}';
 
     const connection = {};
 
@@ -19,6 +21,23 @@ define(['jquery'], function ($) {
 
     connection.fetchTeachersFromApi = function () {
         return $.get(FETCH_TEACHERS_FROM_API_URL);
+    };
+
+    connection.getAllQuestions = function () {
+        return $.get(REQUEST_ALL_QUESTIONS_URL);
+    };
+
+    connection.getQuestion = function (id) {
+        return $.get(REQUEST_SINGLE_QUESTION_URL.replace("{id}", id));
+    };
+
+    connection.updateQuestion = function (question) {
+        return $.ajax({
+            type: 'POST',
+            url: REQUEST_ALL_QUESTIONS_URL,
+            data: JSON.stringify(question),
+            contentType: "application/json"
+        });
     };
 
     connection.getAllPeople = function () {

@@ -38,7 +38,8 @@ define(['jquery', 'bootstrap', 'util/connection', 'util/user'], function ($, boo
 
         const leftItems = [
             {name: 'Home', url: 'index.html'},
-            {name: 'Teachers', url: 'teachers.html'}
+            {name: 'Teachers', url: 'teachers.html'},
+            {name: 'Questions', url: 'questions.html'}
         ];
         processItems('#navLeft', leftItems);
     }

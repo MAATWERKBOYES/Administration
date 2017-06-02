@@ -6,6 +6,7 @@ requirejs.config({
         'util/navbar': {'deps': ['jquery', 'bootstrap']},
         'util/user': {'deps': ['jquery', 'oidc', 'util/connection']},
         'bootstrap': {'deps': ['jquery']},
+        'bootbox': {'deps': ['jquery', 'bootstrap']},
         'datatables.net': {'deps': ['jquery']},
         'datatables': {'deps': ['datatables.net', 'bootstrap']},
     },
@@ -16,6 +17,7 @@ requirejs.config({
         bootstrap: 'lib/bootstrap.min',
         'datatables.net': 'lib/jquery.dataTables.min',
         datatables: 'lib/dataTables.bootstrap.min',
+        bootbox: 'lib/bootbox.min',
 
         noty: 'lib/jquery.noty.packaged.min',
         oidc: 'lib/oidc-client.min',
