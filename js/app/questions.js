@@ -73,23 +73,24 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
             message: 'Loading question data...'
         });
 
-        const questionTableHtmlData = getQuestionTableHtmlData([
-            {name: 'Question', value: getQuestionInputHtmlData(question)},
-            {name: 'Type', value: getSelectHtmlData()}
-        ]);
+        connection.getAllDepartments().done(function (departments) {
+            const questionTableHtmlData = getQuestionTableHtmlData([
+                {name: 'Question', value: getQuestionInputHtmlData(question)},
+                {name: 'Type', value: getSelectHtmlData(departments)}
+            ]);
 
-        const answersTableHtmlData = getAnswersTableHtmlData(question.answers);
-        const btnSubmitHtmlData = `<button id="btnSaveQuestion" data-id="${question.id}" class="btn btn-success">Save question</button>`;
+            const answersTableHtmlData = getAnswersTableHtmlData(question.answers);
+            const btnSubmitHtmlData = `<button id="btnSaveQuestion" data-id="${question.id}" class="btn btn-success">Save question</button>`;
 
-        const element = dialog
-            .find('.bootbox-body')
-            .empty()
-            .append('<h1>Question</h1>')
-            .append(questionTableHtmlData)
-            .append('<h1>Answers</h1>')
-            .append(answersTableHtmlData)
-            .append(btnSubmitHtmlData);
-
+            const element = dialog
+                .find('.bootbox-body')
+                .empty()
+                .append('<h1>Question</h1>')
+                .append(questionTableHtmlData)
+                .append('<h1>Answers</h1>')
+                .append(answersTableHtmlData)
+                .append(btnSubmitHtmlData);
+        });
     }
 
     function getQuestionInputHtmlData(data) {
@@ -147,17 +148,12 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
             '</button>';
     }
 
-    function getSelectHtmlData(data = null) {
-        data = [
-            {department: 'Team M'},
-            {department: 'Team S'}
-        ];
-
+    function getSelectHtmlData(data) {
         let selectHtml = '';
         selectHtml += '<select id="selectType">';
 
         $.each(data, function (i, item) {
-            selectHtml += `<option value="${item.department}">${item.department}</option>`;
+            selectHtml += `<option value="${item}">${item}</option>`;
         });
 
         selectHtml += '</select>';
@@ -171,7 +167,7 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
 
             $.each(response, function (i, item) {
                 const button = '<button type="button" class="btnEdit btn btn-success btn-sm" data-id="' + item.id + '">' +
-                    '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>' +
+                    '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit' +
                     '</button>';
                 table.row.add([item.value, item.department, item.answers.length, button]).node();
             });
