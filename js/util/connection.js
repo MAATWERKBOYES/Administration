@@ -1,5 +1,5 @@
 define(['jquery'], function ($) {
-    const API_HOST_URL = 'http://145.93.96.194:8080/';
+    const API_HOST_URL = 'http://145.93.96.177:8080/';
     const LOGIN_URL = API_HOST_URL + 'login';
 
     const REQUEST_ALL_PEOPLE_URL = API_HOST_URL + 'people';

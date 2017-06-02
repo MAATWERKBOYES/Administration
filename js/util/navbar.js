@@ -8,6 +8,10 @@ define(['jquery', 'bootstrap', 'util/connection', 'util/user'], function ($, boo
                 $('body').prepend(data);
 
                 if (user.isLoggedIn()) {
+                    $('#navLeft')
+                        .append('<li><a href="index.html">Home</a></li>')
+                        .append('<li><a href="teachers.html">Teachers</a></li>');
+
                     $('#navlogin').attr('href', '#').text('Logout').attr('id', 'navlogout');
                     $('#navloginright').prepend('<li><a>Logged in as:' + 'LOL' + '</a></li>');
                     $('body').on('click', '#navlogout', function () {
