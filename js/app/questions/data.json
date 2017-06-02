@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "question": "Wat is a fag?",
+    "type": "Software",
+    "answers": [
+      {
+        "id": 1,
+        "answer": "A nice, loving person."
+      },
+      {
+        "id": 2,
+        "answer": "A happy person."
+      },
+      {
+        "id": 3,
+        "answer": "Your mom."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "Wat is a doggo?",
+    "type": "Media",
+    "answers": [
+      {
+        "id": 4,
+        "answer": "A nice, loving cat."
+      },
+      {
+        "id": 5,
+        "answer": "A happy doggo."
+      },
+      {
+        "id": 6,
+        "answer": "A smol pupper."
+      },
+      {
+        "id": 7,
+        "answer": "A big ole pupper."
+      }
+    ]
+  }
+]

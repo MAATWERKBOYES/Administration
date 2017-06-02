@@ -3,9 +3,9 @@ $(document).ready(function () {
 });
 
 $(document).on('change', '.present', function () {
-    var element = $(this);
-    var id = element.data('id');
-    var present = element.prop('checked');
+    const element = $(this);
+    const id = element.data('id');
+    const present = element.prop('checked');
 
     updateTeacherPresentStatus(id, present);
 });
@@ -13,9 +13,13 @@ $(document).on('change', '.present', function () {
 
 function loadTeachers() {
     $.get(REQUEST_TEACHERS_URL, function (data) {
-        var append = '';
+        let append = '';
 
         $.each(data, function (i, item) {
+            if (item.personalTitle === undefined) {
+                return;
+            }
+
             append += '<tr>';
             append += '<td>' + item.id + '</td>';
             append += '<td>' + item.displayName + '</td>';
@@ -24,20 +28,18 @@ function loadTeachers() {
             append += '</tr>';
         });
 
-        $('#teachers').find('tbody')
+        $('#teachers')
+            .find('tbody')
             .append(append)
             .parent().DataTable();
     }, 'json');
 }
 
 function updateTeacherPresentStatus(id, present) {
-    var data = {
-        id: id,
-        present: present
+    const data = {
+        id,
+        present
     };
 
-    $.post(REQUEST_TEACHERS_URL, {
-        data: JSON.stringify(data)
-    });
+    $.post(UPDATE_TEACHER_PRESENT_URL.replace("{id}", id), data);
 }
-

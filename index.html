@@ -24,22 +24,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <h2>Login</h2>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Please login at Fontys</h3>
-                </div>
-
-                <div class="panel-body">
-                    <button id="btnLogin" class="btn btn-lg btn-success btn-block" type="button">Login to Fontys
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
+        <button id="btnLogin" class="btn btn-success">Login bij fontys</button>
     </div>
 </div>
 
@@ -47,7 +32,7 @@
 <script src="js/lib/require.js"></script>
 <script>
     requirejs(['js/main'], function (main) {
-        requirejs(['app/login']);
+        requirejs(['app/index']);
     });
 </script>
 </body>
