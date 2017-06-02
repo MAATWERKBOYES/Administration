@@ -24,7 +24,13 @@ define(['jquery', 'oidc', 'util/connection', 'noty'], function ($, oidc, connect
 
     user.processLogin = function () {
         if (/access_token/.test(window.location.href)) {
-            manager.signinRedirectCallback().then(login);
+            manager.signinRedirectCallback()
+                .then(login)
+                .catch(function (error) {
+                    console.log(error);
+
+                    printException('Failed to process login request, please try again.')
+                });
         }
     };
 
@@ -48,11 +54,19 @@ define(['jquery', 'oidc', 'util/connection', 'noty'], function ($, oidc, connect
 
     user.logout = function () {
         localStorage.removeItem(USER_STORAGE_NAME);
-        manager.signoutRedirect();
+        manager.signoutRedirect().catch(function (error) {
+            console.log(error);
+
+            printException('Failed to logout of Fontys, please try manually logging out of Fontys\' API.');
+        });
     };
 
     user.redirectToFontysLogin = function () {
-        manager.signinRedirect();
+        manager.signinRedirect().catch(function (error) {
+            console.log(error);
+
+            printException('Failed to login to Fontys\' API, please try again or constract an administrator.');
+        });
     };
 
     user.isLoggedIn = function () {
@@ -68,6 +82,19 @@ define(['jquery', 'oidc', 'util/connection', 'noty'], function ($, oidc, connect
         connection.loginToApi(token).done(function () {
             localStorage.setItem(USER_STORAGE_NAME, JSON.stringify(userObject));
             window.location.replace('index.html');
+        }).fail(function (xhr, status, error) {
+            printException('Failed to contact the DocentGO API, did you enable insecure content?');
+        });
+    }
+
+    function printException(message) {
+        noty({
+            text: message,
+            theme: 'relax',
+            layout: 'topCenter',
+            type: 'error',
+            force: true,
+            timeout: 5000
         });
     }
 

@@ -8,26 +8,48 @@ define(['jquery', 'bootstrap', 'util/connection', 'util/user'], function ($, boo
                 $('body').prepend(data);
 
                 if (user.isLoggedIn()) {
-                    $('#navLeft')
-                        .append('<li><a href="index.html">Home</a></li>')
-                        .append('<li><a href="teachers.html">Teachers</a></li>');
-
-                    $('#navlogin').attr('href', '#').text('Logout').attr('id', 'navlogout');
-                    $('#navloginright').prepend('<li><a>Logged in as:' + 'LOL' + '</a></li>');
-                    $('body').on('click', '#navlogout', function () {
-                        user.logout();
-                    });
+                    processLoggedInItems();
+                } else {
+                    processLoggedOutItems();
                 }
 
-                var path = window.location.pathname.replace(/^.*[\\\/]/, '');
-                $('#navbar > ul').children().each(function () {
-                    var element = $(this).find('a');
-                    if (element.attr('href') === path) {
-                        $(this).addClass('active');
-                        return true;
-                    }
-                });
+                setCurrentActiveTab();
             });
         }
     });
+
+    function setCurrentActiveTab() {
+        const path = window.location.pathname.replace(/^.*[\\\/]/, '');
+        $('#navbar').find('> ul').children().each(function () {
+            const element = $(this).find('a');
+            if (element.attr('href') === path) {
+                $(this).addClass('active');
+                return true;
+            }
+        });
+    }
+
+    function processLoggedInItems() {
+        $('#navHome').attr('href', 'index.html');
+        $('#navRightLogin').attr('href', '#').text('Logout').attr('id', 'navRightLogout');
+        $('body').on('click', '#navRightLogout', function () {
+            user.logout();
+        });
+
+        const leftItems = [
+            {name: 'Home', url: 'index.html'},
+            {name: 'Teachers', url: 'teachers.html'}
+        ];
+        processItems('#navLeft', leftItems);
+    }
+
+    function processLoggedOutItems() {
+        $('#navHome').attr('href', 'login.html');
+    }
+
+    function processItems(id, items) {
+        items.forEach(function (item, i) {
+            $(id).append('<li><a href="' + item.url + '">' + item.name + '</a></li>')
+        });
+    }
 });
