@@ -1,7 +1,7 @@
 define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty'], function ($, user, connection, datatables, noty) {
     user.checkLoggedIn();
 
-    $(document).on('change', '.present', function () {
+    $(document).on('change', '.presentCheckBox', function () {
         const element = $(this);
         updateCheckBox(element);
     });
@@ -64,10 +64,13 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty'], functio
                     return;
                 }
 
-                const checkBox = '<input type="checkbox" class="present" data-id="' + item.id + '" value="present"' + (item.present ? " checked" : "") + '>' + '</td>';
+                const checkBox = `<input type="checkbox" class="presentCheckBox" data-id="${item.id}" value="present" ${(item.present ? "checked" : "")}> <span class="presentSpan" data-id="${item.id}"> ${(item.present ? "P" : "N")}</span>`;
                 const row = table.row.add([item.id, item.displayName, item.personalTitle, checkBox]).node();
-                const element = $(row).find('td').eq(3);
-                updatePresentCell(element, item.present);
+                const column = $(row).find('td').eq(3);
+
+                const checkBoxElement = column.find('input');
+                const spanElement = column.find('span');
+                updatePresentCell(checkBoxElement, spanElement, item.present);
             });
 
             table.draw();
@@ -79,12 +82,15 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty'], functio
     function updateTeacherPresentStatus(id, present) {
         connection.updatePersonPresence(id, present);
 
-        const element = $(`[data-id='${id}']`).parent();
-        updatePresentCell(element, present);
+        const checkBoxElement = $(`.presentCheckBox[data-id='${id}']`);
+        const spanElement = $(`.presentSpan[data-id='${id}']`);
+        updatePresentCell(checkBoxElement, spanElement, present);
     }
 
-    function updatePresentCell(element, present) {
-        element.toggleClass('success', present);
-        element.toggleClass('danger', !present);
+    function updatePresentCell(checkBoxElement, spanElement, present) {
+        checkBoxElement.parent().toggleClass('success', present);
+        checkBoxElement.parent().toggleClass('danger', !present);
+
+        spanElement.text(` ${(present ? 'P' : 'N')}`);
     }
 });
