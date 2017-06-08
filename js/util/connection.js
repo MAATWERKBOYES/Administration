@@ -1,5 +1,5 @@
-define(['jquery'], function ($) {
-    const API_HOST_URL = 'http://145.93.96.177:8080/';
+define(['jquery', 'util/connection_config'], function ($) {
+    const API_HOST_URL = `http://${CONNECTION_CONFIG.connection_host}:${CONNECTION_CONFIG.connection_port}/`;
     const LOGIN_URL = API_HOST_URL + 'login';
 
     const REQUEST_ALL_PEOPLE_URL = API_HOST_URL + 'people';

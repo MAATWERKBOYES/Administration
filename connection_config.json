@@ -1,0 +1,5 @@
+{
+  "connection_host": "145.93.62.118",
+  "connection_port": 8081,
+  "bogus_information": "ALSO CHANGE IN /js/util/connection_config.js"
+}
