@@ -23,6 +23,11 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
         const element = $(this).parent().parent().remove();
     });
 
+    $(document).on('click', '.btnCorrectness', function () {
+        const element = $(this);
+        updateCorrectness(element, false);
+    });
+
     $(document).on('click', '#btnAddAnswer', function () {
         if (dialog === null || dialog === undefined) {
             return;
@@ -37,31 +42,36 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
 
     $(document).on('click', '#btnSaveQuestion', function () {
         const element = $(this);
-        const id = element.data('id');
+        const questionId = element.data('id');
         const questionText = $('#txtQuestion').val();
         const department = $('#selectType').val();
 
-        const data = {
-            id: id,
+        const question = {
+            id: questionId,
             value: questionText,
             department: department,
             answers: []
         };
 
         $(".txtAnswer").each(function (i, item) {
-            data.answers.push({
+            question.answers.push({
                 id: $(this).data('id'),
+                correct: isBtnCorrect($(this).parent().parent().children().eq(2).children().eq(0)),
                 value: $(this).val()
             });
         });
 
-        connection.updateQuestion(data).done(function () {
+        connection.updateQuestion(question).done(function () {
             fillQuestionsTable();
 
             dialog.modal('hide');
             dialog = null;
         });
     });
+
+    function isBtnCorrect(element) {
+        return element.hasClass('btn-success');
+    }
 
     function requestAndEditQuestion(id) {
         connection.getQuestion(id).done(editQuestion);
@@ -132,7 +142,7 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
         let tableAnswerLineHtml = '';
 
         tableAnswerLineHtml += '<tr>';
-        tableAnswerLineHtml += `<td>Answer</td><td>${getAnswerInputHtmlData(answer)}</td><td>${getAnswerRemoveHtmlData(answer)}</td>`;
+        tableAnswerLineHtml += `<td>Answer</td><td>${getAnswerInputHtmlData(answer)}</td><td>${getAnswerCorrectnessHtmlData(answer)} ${getAnswerRemoveHtmlData(answer)}</td>`;
         tableAnswerLineHtml += '</tr>';
 
         return tableAnswerLineHtml;
@@ -142,8 +152,14 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
         return `<input type="text" class="txtAnswer form-control" data-id="${answer.id}" value="${answer.value === null ? '' : answer.value}">`;
     }
 
+    function getAnswerCorrectnessHtmlData(answer) {
+        return `<button type="button" class="btnCorrectness btn ${answer.correct ? 'btn-success' : 'btn-warning'} btn-sm" data-id="${answer.id}">` +
+            `<span class="glyphicon glyphicon-thumbs-${answer.correct ? 'up' : 'down'}" aria-hidden="true"></span>` +
+            '</button>';
+    }
+
     function getAnswerRemoveHtmlData(answer) {
-        return '<button type="button" class="btnRemove btn btn-danger btn-sm" data-id="' + answer.id + '">' +
+        return `<button type="button" class="btnRemove btn btn-danger btn-sm" data-id="${answer.id}">` +
             '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
             '</button>';
     }
@@ -166,7 +182,7 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
             table.clear();
 
             $.each(response, function (i, item) {
-                const button = '<button type="button" class="btnEdit btn btn-success btn-sm" data-id="' + item.id + '">' +
+                const button = `<button type="button" class="btnEdit btn btn-success btn-sm" data-id="${item.id}">` +
                     '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit' +
                     '</button>';
                 table.row.add([item.value, item.department, item.answers.length, button]).node();
@@ -174,6 +190,17 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
 
             table.draw();
         });
+    }
+
+    function updateCorrectness(btnElement) {
+        const correct = !isBtnCorrect(btnElement);
+
+        btnElement.toggleClass('btn-success', correct);
+        btnElement.toggleClass('btn-warning', !correct);
+
+        const spanElement = btnElement.children().eq(0);
+        spanElement.toggleClass('glyphicon-thumbs-up', correct);
+        spanElement.toggleClass('glyphicon-thumbs-down', !correct);
     }
 
     fillQuestionsTable();
