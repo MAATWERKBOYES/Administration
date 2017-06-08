@@ -76,7 +76,7 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
         connection.getAllDepartments().done(function (departments) {
             const questionTableHtmlData = getQuestionTableHtmlData([
                 {name: 'Question', value: getQuestionInputHtmlData(question)},
-                {name: 'Type', value: getSelectHtmlData(departments)}
+                {name: 'Type', value: getSelectHtmlData(question, departments)}
             ]);
 
             const answersTableHtmlData = getAnswersTableHtmlData(question.answers);
@@ -148,12 +148,12 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
             '</button>';
     }
 
-    function getSelectHtmlData(data) {
+    function getSelectHtmlData(question, data) {
         let selectHtml = '';
         selectHtml += '<select id="selectType">';
 
         $.each(data, function (i, item) {
-            selectHtml += `<option value="${item}">${item}</option>`;
+            selectHtml += `<option value="${item}" ${(question.department === item ? 'selected' : '')}>${item}</option>`;
         });
 
         selectHtml += '</select>';
