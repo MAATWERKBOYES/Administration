@@ -69,6 +69,17 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
         });
     });
 
+    $(document).on('click', '.btnRemoveQuestion', function () {
+        const element = $(this);
+        const id = $(this).data('id');
+
+        removeQuestion(id);
+    });
+
+    function removeQuestion(id) {
+        connection.removeQuestion(id).done(fillQuestionsTable);
+    }
+
     function isBtnCorrect(element) {
         return element.hasClass('btn-success');
     }
@@ -182,14 +193,24 @@ define(['jquery', 'util/user', 'util/connection', 'datatables', 'noty', 'bootbox
             table.clear();
 
             $.each(response, function (i, item) {
-                const button = `<button type="button" class="btnEdit btn btn-success btn-sm" data-id="${item.id}">` +
-                    '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit' +
-                    '</button>';
-                table.row.add([item.value, item.department, item.answers.length, button]).node();
+                const buttons = `${getEditButtonHtmlData(item)} ${getRemoveButtonHtmlData(item)}`;
+                table.row.add([item.value, item.department, item.answers.length, buttons]).node();
             });
 
             table.draw();
         });
+    }
+
+    function getRemoveButtonHtmlData(question) {
+        return `<button type="button" class="btnRemoveQuestion btn btn-danger btn-sm" data-id="${question.id}">` +
+            '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
+            '</button>';
+    }
+
+    function getEditButtonHtmlData(question) {
+        return `<button type="button" class="btnEdit btn btn-success btn-sm" data-id="${question.id}">` +
+            '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>' +
+            '</button>';
     }
 
     function updateCorrectness(btnElement) {

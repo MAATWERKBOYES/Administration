@@ -10,6 +10,7 @@ define(['jquery', 'util/connection_config'], function ($) {
     const REQUEST_ALL_DEPARTMENTS_URL = API_HOST_URL + 'department';
     const REQUEST_ALL_QUESTIONS_URL = API_HOST_URL + 'question';
     const UPDATE_QUESTION_URL = API_HOST_URL + 'question';
+    const REMOVE_QUESTION_URL = API_HOST_URL + 'question/{id}/remove';
     const REQUEST_SINGLE_QUESTION_URL = API_HOST_URL + 'question/{id}';
 
     const connection = {};
@@ -43,6 +44,10 @@ define(['jquery', 'util/connection_config'], function ($) {
             data: JSON.stringify(question),
             contentType: "application/json"
         });
+    };
+
+    connection.removeQuestion = function (id) {
+        return $.post(REMOVE_QUESTION_URL.replace("{id}", id));
     };
 
     connection.getAllPeople = function () {
